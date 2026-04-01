@@ -1,15 +1,15 @@
 :root {
   color-scheme: light;
-  --bg: #f6f0e6;
-  --card: rgba(255, 252, 246, 0.92);
-  --line: #d8cfbf;
-  --ink: #18222d;
-  --muted: #5c6570;
+  --bg: #e8f1fb;
+  --card: rgba(250, 253, 255, 0.92);
+  --line: #c8d9ee;
+  --ink: #132235;
+  --muted: #53657b;
   --green: #1f7a4d;
-  --amber: #a06a00;
+  --amber: #9a6a00;
   --red: #b13f3f;
-  --accent: #2f5a48;
-  --accent-2: #bd5b34;
+  --accent: #1f5fa8;
+  --accent-2: #3c86d1;
 }
 
 * {
@@ -24,9 +24,9 @@ body {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(47, 90, 72, 0.15), transparent 28%),
-    radial-gradient(circle at top right, rgba(189, 91, 52, 0.12), transparent 24%),
-    linear-gradient(180deg, #fbf7f1 0%, var(--bg) 100%);
+    radial-gradient(circle at top left, rgba(60, 134, 209, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(31, 95, 168, 0.14), transparent 24%),
+    linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
   color: var(--ink);
   font-family: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
 }
@@ -87,9 +87,9 @@ input {
 .rule-card {
   border: 1px solid var(--line);
   border-radius: 20px;
-  background: #fff9ef;
+  background: #eef6ff;
   padding: 14px 16px;
-  color: #534a3f;
+  color: #36506e;
 }
 
 .content-grid {
@@ -104,10 +104,10 @@ input {
 }
 
 .drop-zone {
-  border: 2px dashed #cdbc9f;
+  border: 2px dashed #8eb5de;
   border-radius: 24px;
   padding: 24px;
-  background: rgba(255, 248, 236, 0.74);
+  background: rgba(239, 247, 255, 0.8);
 }
 
 .button-row {
@@ -159,7 +159,7 @@ input {
 .error {
   margin-top: 14px;
   border: 1px solid #f2c2c2;
-  background: #fff0f0;
+  background: #fff4f4;
   color: #8f2e2e;
   border-radius: 18px;
   padding: 12px 14px;
@@ -262,8 +262,8 @@ input {
 }
 
 .pill-soft {
-  background: #f4efe6;
-  color: #655a49;
+  background: #edf4fd;
+  color: #45617f;
 }
 
 .result-body {
@@ -295,7 +295,7 @@ input {
 .page-preview-shell {
   border: 1px solid var(--line);
   border-radius: 20px;
-  background: #fffdf8;
+  background: #f8fbff;
   padding: 14px;
 }
 
@@ -312,7 +312,7 @@ input {
   margin-top: 12px;
   border-radius: 16px;
   overflow: hidden;
-  background: #f0ece3;
+  background: #e7f0fb;
   border: 1px solid var(--line);
 }
 
@@ -385,7 +385,7 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(246, 240, 230, 0.78);
+  background: rgba(232, 241, 251, 0.8);
   color: var(--muted);
   font-weight: 700;
 }
@@ -424,7 +424,7 @@ input {
 
 .page-box {
   border-radius: 16px;
-  background: #f8f3ea;
+  background: #eef5fd;
   padding: 12px 14px;
 }
 
