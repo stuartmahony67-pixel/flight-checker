@@ -370,6 +370,16 @@ async function scanPage(pdfjs: any, page: any, pageHeightPoints: number) {
   return { colorSpaces, textBounds, vectorBounds, images, rgbRegions };
 }
 
+function createEmptyScan() {
+  return {
+    colorSpaces: new Set<string>(),
+    textBounds: [] as BoundingBoxMm[],
+    vectorBounds: [] as BoundingBoxMm[],
+    images: [] as Array<{ boundsMm: BoundingBoxMm; dpi: number | null }>,
+    rgbRegions: [] as WarningRegion[]
+  };
+}
+
 function analyseBleed(trimBoxMm: PageGeometryMm, bleedBoxMm: PageGeometryMm, pageNumber: number) {
   const left = round(trimBoxMm.x - bleedBoxMm.x);
   const bottom = round(trimBoxMm.y - bleedBoxMm.y);
@@ -517,18 +527,10 @@ export async function analyzeArtwork(bytes: ArrayBuffer, fileName: string): Prom
   let pdfDoc;
   let pdfjs;
   let pdfjsDoc;
+  let advancedScanUnavailableReason: string | null = null;
 
   try {
-    [pdfDoc, pdfjs] = await Promise.all([
-      PDFDocument.load(pdfBytes, { ignoreEncryption: true }),
-      loadPdfJs()
-    ]);
-    pdfjsDoc = await pdfjs.getDocument({
-      data: pdfBytes,
-      disableWorker: true,
-      isEvalSupported: false,
-      useSystemFonts: false
-    } as never).promise;
+    pdfDoc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
   } catch (error) {
     if (extension === ".ai") {
       const check = createCheck(
@@ -554,6 +556,23 @@ export async function analyzeArtwork(bytes: ArrayBuffer, fileName: string): Prom
     throw error;
   }
 
+  try {
+    pdfjs = await loadPdfJs();
+    pdfjsDoc = await pdfjs.getDocument({
+      data: pdfBytes,
+      disableWorker: true,
+      isEvalSupported: false,
+      useSystemFonts: false
+    } as never).promise;
+  } catch (error) {
+    advancedScanUnavailableReason =
+      error instanceof Error && error.message
+        ? error.message
+        : "Advanced PDF analysis is unavailable on this hosting environment.";
+    pdfjs = null;
+    pdfjsDoc = null;
+  }
+
   const checks: ArtworkCheckResult[] = [];
   const pages: ArtworkPageReport[] = [];
   const pageCount = pdfDoc.getPageCount();
@@ -567,20 +586,30 @@ export async function analyzeArtwork(bytes: ArrayBuffer, fileName: string): Prom
   for (let index = 0; index < pageCount; index += 1) {
     const pageNumber = index + 1;
     const libPage = pdfDoc.getPage(index);
-    const jsPage = await pdfjsDoc.getPage(pageNumber);
-    const viewport = jsPage.getViewport({ scale: 1 });
     const pageSizeMm = {
-      width: round(pointsToMm(viewport.width)),
-      height: round(pointsToMm(viewport.height))
+      width: round(pointsToMm(libPage.getSize().width)),
+      height: round(pointsToMm(libPage.getSize().height))
     };
     const trimBoxMm = boxToMm(libPage.getTrimBox());
     const bleedBoxMm = boxToMm(libPage.getBleedBox());
-    const scan = await scanPage(pdfjs, jsPage, viewport.height);
+    const hasAdvancedScan = Boolean(pdfjs && pdfjsDoc);
+    let scan = createEmptyScan();
+
+    if (pdfjs && pdfjsDoc) {
+      const jsPage = await pdfjsDoc.getPage(pageNumber);
+      const viewport = jsPage.getViewport({ scale: 1 });
+      scan = await scanPage(pdfjs, jsPage, viewport.height);
+    }
     const bleed = analyseBleed(trimBoxMm, bleedBoxMm, pageNumber);
-    const colour = analyseColour(scan, pageNumber);
-    const safety = analyseSafety(trimBoxMm, scan, pageNumber);
-    const raster = analyseRaster(scan, pageNumber);
-    const pageChecks = [bleed.check, colour, raster.check, ...safety.checks];
+    const colour = hasAdvancedScan ? analyseColour(scan, pageNumber) : null;
+    const safety = hasAdvancedScan ? analyseSafety(trimBoxMm, scan, pageNumber) : null;
+    const raster = hasAdvancedScan ? analyseRaster(scan, pageNumber) : null;
+    const pageChecks = [
+      bleed.check,
+      ...(colour ? [colour] : []),
+      ...(raster ? [raster.check] : []),
+      ...(safety ? safety.checks : [])
+    ];
     const pageStatus = pageChecks.reduce<PreflightStatus>((current, check) => maxStatus(current, check.status), "pass");
 
     checks.push(...pageChecks);
@@ -600,14 +629,29 @@ export async function analyzeArtwork(bytes: ArrayBuffer, fileName: string): Prom
         width: round(bleedBoxMm.width),
         height: round(bleedBoxMm.height)
       },
-      safeBoundsMm: safety.safeBoundsMm,
+      safeBoundsMm: safety ? safety.safeBoundsMm : safeBounds(trimBoxMm),
       bleedMm: bleed.bleedMm,
       detectedColorSpaces: Array.from(scan.colorSpaces).sort(),
       textCount: scan.textBounds.length,
       vectorCount: scan.vectorBounds.length,
       imageCount: scan.images.length,
-      warningRegions: [...safety.warningRegions, ...raster.warningRegions, ...scan.rgbRegions]
+      warningRegions: [
+        ...(safety ? safety.warningRegions : []),
+        ...(raster ? raster.warningRegions : []),
+        ...scan.rgbRegions
+      ]
     });
+  }
+
+  if (advancedScanUnavailableReason) {
+    checks.unshift(
+      createCheck(
+        "warn",
+        "hosted-analysis",
+        "Hosted analysis limits",
+        "Advanced colour, text, vector, and raster scanning is unavailable on this host, so the report falls back to geometry-based checks only."
+      )
+    );
   }
 
   const status = checks.reduce<PreflightStatus>((current, check) => maxStatus(current, check.status), "pass");
