@@ -1,15 +1,15 @@
 :root {
   color-scheme: light;
-  --bg: #e8f1fb;
-  --card: rgba(250, 253, 255, 0.92);
-  --line: #c8d9ee;
-  --ink: #132235;
-  --muted: #53657b;
+  --bg: #f8e7ea;
+  --card: rgba(255, 250, 251, 0.92);
+  --line: #e8c8d0;
+  --ink: #35131a;
+  --muted: #7a5360;
   --green: #1f7a4d;
   --amber: #9a6a00;
   --red: #b13f3f;
-  --accent: #1f5fa8;
-  --accent-2: #3c86d1;
+  --accent: #a61f3d;
+  --accent-2: #d14d68;
 }
 
 * {
@@ -24,9 +24,9 @@ body {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(60, 134, 209, 0.18), transparent 28%),
-    radial-gradient(circle at top right, rgba(31, 95, 168, 0.14), transparent 24%),
-    linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+    radial-gradient(circle at top left, rgba(209, 77, 104, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(166, 31, 61, 0.14), transparent 24%),
+    linear-gradient(180deg, #fff8fa 0%, var(--bg) 100%);
   color: var(--ink);
   font-family: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
 }
@@ -87,9 +87,9 @@ input {
 .rule-card {
   border: 1px solid var(--line);
   border-radius: 20px;
-  background: #eef6ff;
+  background: #fff0f3;
   padding: 14px 16px;
-  color: #36506e;
+  color: #743848;
 }
 
 .content-grid {
@@ -104,10 +104,10 @@ input {
 }
 
 .drop-zone {
-  border: 2px dashed #8eb5de;
+  border: 2px dashed #d99baa;
   border-radius: 24px;
   padding: 24px;
-  background: rgba(239, 247, 255, 0.8);
+  background: rgba(255, 241, 244, 0.82);
 }
 
 .button-row {
@@ -262,8 +262,8 @@ input {
 }
 
 .pill-soft {
-  background: #edf4fd;
-  color: #45617f;
+  background: #fbeef1;
+  color: #7a4a58;
 }
 
 .result-body {
@@ -295,7 +295,7 @@ input {
 .page-preview-shell {
   border: 1px solid var(--line);
   border-radius: 20px;
-  background: #f8fbff;
+  background: #fff9fb;
   padding: 14px;
 }
 
@@ -312,7 +312,7 @@ input {
   margin-top: 12px;
   border-radius: 16px;
   overflow: hidden;
-  background: #e7f0fb;
+  background: #f8e8ec;
   border: 1px solid var(--line);
 }
 
@@ -385,7 +385,7 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(232, 241, 251, 0.8);
+  background: rgba(248, 231, 234, 0.82);
   color: var(--muted);
   font-weight: 700;
 }
@@ -424,7 +424,7 @@ input {
 
 .page-box {
   border-radius: 16px;
-  background: #eef5fd;
+  background: #fff1f4;
   padding: 12px 14px;
 }
 
