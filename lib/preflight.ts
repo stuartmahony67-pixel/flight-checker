@@ -1,5 +1,4 @@
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 import { PDFDocument } from "pdf-lib";
 import type {
   ArtworkCheckResult,
@@ -98,11 +97,7 @@ function isInside(bounds: BoundingBoxMm, box: BoundingBoxMm) {
 }
 
 async function loadPdfJs() {
-  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  pdfjs.GlobalWorkerOptions.workerSrc = pathToFileURL(
-    path.join(process.cwd(), "node_modules", "pdfjs-dist", "legacy", "build", "pdf.worker.mjs")
-  ).toString();
-  return pdfjs;
+  return import("pdfjs-dist/legacy/build/pdf.mjs");
 }
 
 function summarizeStatus(status: PreflightStatus, count: number) {
