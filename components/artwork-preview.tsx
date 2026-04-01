@@ -103,10 +103,10 @@ function PagePreview({
       try {
         setState("loading");
         const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+        pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.mjs";
         const bytes = await file.arrayBuffer();
         const document = await pdfjs.getDocument({
           data: bytes,
-          disableWorker: true,
           isEvalSupported: false,
           useSystemFonts: false
         } as never).promise;
