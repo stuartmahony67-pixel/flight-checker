@@ -15,6 +15,7 @@ const MM_TO_INCH = 1 / 25.4;
 const ALLOWED_BLEEDS_MM = [1.5, 2];
 const BLEED_TOLERANCE_MM = 0.2;
 const SAFETY_ZONE_MM = 3;
+const MAX_PAGES_PER_FILE = 12;
 
 function round(value: number, precision = 2) {
   const factor = 10 ** precision;
@@ -555,8 +556,15 @@ export async function analyzeArtwork(bytes: ArrayBuffer, fileName: string): Prom
 
   const checks: ArtworkCheckResult[] = [];
   const pages: ArtworkPageReport[] = [];
+  const pageCount = pdfDoc.getPageCount();
 
-  for (let index = 0; index < pdfDoc.getPageCount(); index += 1) {
+  if (pageCount > MAX_PAGES_PER_FILE) {
+    throw new Error(
+      `${fileName} has ${pageCount} pages. This hosted version is limited to ${MAX_PAGES_PER_FILE} pages per file.`
+    );
+  }
+
+  for (let index = 0; index < pageCount; index += 1) {
     const pageNumber = index + 1;
     const libPage = pdfDoc.getPage(index);
     const jsPage = await pdfjsDoc.getPage(pageNumber);

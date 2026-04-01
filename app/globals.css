@@ -165,6 +165,31 @@ input {
   padding: 12px 14px;
 }
 
+.upload-notice {
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 14px 16px;
+}
+
+.upload-helper {
+  margin-top: 4px;
+}
+
+.upload-spinner {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border-radius: 999px;
+  border: 3px solid rgba(166, 31, 61, 0.2);
+  border-top-color: var(--accent);
+  animation: upload-spin 0.8s linear infinite;
+}
+
 .queue {
   display: grid;
   gap: 12px;
@@ -437,6 +462,16 @@ input {
 
 .muted {
   color: var(--muted);
+}
+
+@keyframes upload-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (min-width: 900px) {

@@ -168,6 +168,18 @@ export function ArtworkFlightCheckerApp() {
                 </button>
               </div>
 
+              {isSubmitting ? (
+                <div className="upload-notice" role="status" aria-live="polite">
+                  <span className="upload-spinner" aria-hidden="true" />
+                  <div>
+                    <strong>Uploading and checking artwork</strong>
+                    <div className="helper upload-helper">
+                      Please wait while the file is uploaded and the preflight checks are run.
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
               {error ? <div className="error">{error}</div> : null}
             </div>
           </div>
@@ -225,7 +237,9 @@ export function ArtworkFlightCheckerApp() {
 
             {reports.length === 0 ? (
               <p className="helper">
-                Run the checker to see pass, warn, and fail results for each uploaded file.
+                {isSubmitting
+                  ? "The upload is in progress. Results will appear here as soon as the check completes."
+                  : "Run the checker to see pass, warn, and fail results for each uploaded file."}
               </p>
             ) : null}
 
