@@ -1,10 +1,16 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { ChangeEvent, DragEvent, useMemo, useState } from "react";
-import { ArtworkPreview } from "@/components/artwork-preview";
 import type { ArtworkCheckResult, ArtworkReport, PreflightStatus } from "@/types";
 
 const ACCEPTED_EXTENSIONS = [".pdf", ".ai"];
+const ArtworkPreview = dynamic(
+  () => import("@/components/artwork-preview").then((module) => module.ArtworkPreview),
+  {
+    ssr: false
+  }
+);
 
 function statusLabel(status: PreflightStatus) {
   if (status === "pass") return "Pass";
